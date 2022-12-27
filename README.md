@@ -7,4 +7,6 @@ remotes::install_github("PaulKeenan11/dummyscoring")
 Then load it with:
 library(dummyscoring)
 
-And enjoy!
+The only function is dummy_score()
+
+Enjoy!
