@@ -10,9 +10,6 @@ dummy_score(
   loadings = fa$loadings,
   method = c("Rubin", "Bartlett", "Harman", "Anderson"),
   parallel = F,
-  core.variables = NULL,
-  scoring.variables = NULL,
-  corr.matrix = NULL,
   ...
 )
 }
@@ -25,21 +22,53 @@ dummy_score(
 
 \item{method}{Which Dummy-Extension method to use. Options are 'Rubin','Bartlett','Harman', and 'Anderson.' Rubin is similar to the Thurstone method in traditional factor analysis, and Bartlett and Harman are precisely the same. 'Anderson' is short for the Anderson/Rubin method that produces uncorrelated factor scores.}
 
-\item{parallel}{A logical indicating whether to use multiple cores for scoring. This will only offer speed improvement for very large datasets, and will probably be slower for most datasets.}
+\item{parallel}{A T/F indicating whether to use multiple cores for scoring. This will only offer speed improvement for very large datasets, and will probably be slower for most datasets.}
 
-\item{core.variables}{(optional) Can be either a vector of variable names or index numbers. Defines the 'core' variables from which the factor extension is done. If 'fa' and 'loadings' and 'corr.matrix' are all null, it will use all the variables in 'data'}
+\item{...}{Additional arguments, including
 
-\item{scoring.variables}{(optional) Either a vector of variable names of index numbers. Defines the variables used in the scoring step, which can be 'core' variables or other variables, or any combination thereof. Defaults to all the variables in 'data'}
-
-\item{corr.matrix}{(optional) A correlation matrix of the 'core' variables, used in the factor extension step}
-
-\item{...}{(optional) Arguments passed to the psych::fa function if no factor loadings are provided. See psych::fa for more details.}
+\itemize{
+  \item{Arguments to 'fa' function}{
+    If no factor loadings are provided, they will be estimated from the data using the 'fa' function in the 'psych' package. 
+    Arguments to the 'fa' function, such as 'nfactors' or 'rotate,' can be passed directly into 'dummy_score.' See psych::fa for more.
+    }
+  \item{core.variables}{
+    Can be either a vector of variable names or index numbers. 
+    Defines the 'core' variables from which the factor extension is done. 
+    If 'fa' and 'loadings' and 'corr.matrix' are all null, it will default to all the variables in 'data'
+    }
+  \item{scoring.variables}{
+   Either a vector of variable names or index numbers. 
+   Defines the variables used in the scoring step, which can be 'core' variables or other variables, or any combination thereof. 
+   Defaults to all the variables in 'data'
+  }
+  \item{core.rows}{
+   A vector indicating which rows to include in the 'core' factor analysis. 
+   If the data are from multiple years, for example, it may be desirable to perform the core analysis on one year, and extend to the rest.
+ }
+  \item{score}{
+ A T/F indicating whether to estimate scores for every individual observation. If you just desire the category loadings, set score to F.
+ }
+ \item{corr.matrix}{
+  A correlation matrix of the 'core' variables, used in the factor extension step. Saves time if this is already known.
+  }
+ \item{P.ef}{
+ Category loadings, if they are already known (perhaps from a previous run of dummy_score).
+ }
+ \item{exploratory.reorder}{
+ A T/F indicating whether to use exploratory category re-ordering. 
+ First, category loadings are obtained through dummy-extension.
+ Next, the proper order of the categories for each variable can be ascertained.
+ Then, we can re-order the categories of variables to make them monotonically related to the factors.
+ Finally, We can perform another factor analysis with these re-ordered variables, obtaining stronger loadings.
+ This procedure is experimental and adds to computation time.
+ }
+}}
 }
 \value{
 A list with elements 'scores,' 'original.loadings,' and 'extension.loadings.' The factor scores for every observation are contained in 'scores.' The loadings of the core variables are in 'original.loadings' and the category loadings of the scoring variables are in 'extension.loadings'
 }
 \description{
-Scores a matrix or dataframe on latent factors, using Dummy Extension Scoring (Keenan, 2023). The factors to be scored can either be provided in the form of a psych::fa output, or a matrix of loadings. Alternatively, if only a data matrix is provided, the factor analysis will be performed within the dummy_score function, with parameter passed by '...' The user can select 'core.variables' to be factored, and also 'scoring.variables' to be used in the scoring step. The 'scoring.variables' can include factored variables, variables not factored, or any combination thereof.
+Scores a matrix or dataframe on latent factors, using Dummy Extension Scoring (Keenan, 2023). The factors to be scored can either be provided in the form of a psych::fa output, or a matrix of loadings. Alternatively, if only a data matrix is provided, a factor analysis will be performed using parameters passed by '...' The user can select 'core.variables' to be factored, and also 'scoring.variables' to be used in the scoring step. The 'scoring.variables' can include factored variables, variables not factored, or any combination thereof.
 }
 \examples{
 \dontrun{big.five.scores <- dummy_score(data = bigfive, method = 'Bartlett')$scores}
