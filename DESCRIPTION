@@ -5,9 +5,10 @@ Version: 0.1.0
 Author: Paul Keenan
 Maintainer: Paul Keenan <paulkeenan02@outlook.com>
 Description: Contains just one function, dummy_score(), which takes in a matrix or dataframe and calculates factor scores using Dummy Extension Scoring (Keenan, 2023, not yet published). 
-    The method uses 'factor extension' (Dwyer 1937, Mosier 1938, Horn 1973, McDonald 1978, Gorsuch 1997) to extend loadings to the categories of variables, and then estimates factor scores using those category loadings.
+    The method uses 'factor extension' (Gorsuch 1997) to extend loadings to the categories of variables, and then estimates factor scores using those category loadings.
 License: GPL-2
 Encoding: UTF-8
-LazyData: false
-Imports: MASS, psych, future, future.apply, fastDummies
+LazyLoadings: false
+ByteCompile: true
+Imports: MASS, Matrix, psych, future, future.apply, fastDummies, stats
 RoxygenNote: 7.2.3
